@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BioInfo Toolkit</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f7f9f8;--card:#fff;--ink:#1c2523;--mute:#5b6b67;--line:#dde5e2;--acc:#0f766e;--accbg:#e0f2ef}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101716;--card:#182120;--ink:#e6efed;--mute:#9bb0ab;--line:#2a3735;--acc:#5eead4;--accbg:#12332f}}
+:root[data-theme="dark"]{--bg:#101716;--card:#182120;--ink:#e6efed;--mute:#9bb0ab;--line:#2a3735;--acc:#5eead4;--accbg:#12332f}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{padding:2.2rem 1.2rem 1rem;max-width:960px;margin:auto}
+h1{margin:0 0 .3rem;font-size:1.9rem}
+header p{margin:0;color:var(--mute)}
+nav{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);border-bottom:1px solid var(--line);z-index:5;overflow-x:auto;white-space:nowrap}
+nav div{max-width:960px;margin:auto;padding:.5rem 1.2rem}
+nav a{display:inline-block;margin-right:.4rem;padding:.25rem .7rem;border-radius:99px;background:var(--accbg);color:var(--acc);text-decoration:none;font-size:.9rem}
+main{max-width:960px;margin:auto;padding:0 1.2rem 3rem}
+section{margin-top:2rem}
+h2{font-size:1.3rem;margin:0 0 .3rem}
+.sub{color:var(--mute);margin:0 0 .8rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.7rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:.8rem .9rem}
+.card a{color:var(--acc);font-weight:600;text-decoration:none}
+.card a:hover{text-decoration:underline}
+.card small{display:block;color:var(--mute);margin-top:.15rem}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1rem}
+textarea,select,input{width:100%;font:inherit;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:.4rem .5rem}
+textarea{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem;min-height:90px}
+label{display:block;font-size:.85rem;color:var(--mute);margin:.5rem 0 .15rem}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.7rem}
+button{margin-top:.8rem;background:var(--acc);color:var(--bg);border:0;border-radius:6px;padding:.5rem 1.1rem;font:inherit;font-weight:600;cursor:pointer}
+.out{margin-top:.8rem;overflow-x:auto}
+pre{margin:0;font:.82rem/1.35 ui-monospace,Menlo,Consolas,monospace;white-space:pre}
+.stats{color:var(--mute);font-size:.9rem;margin-bottom:.4rem}
+ul.tips{margin:.2rem 0 0;padding-left:1.1rem}
+table{border-collapse:collapse;font:.72rem ui-monospace,Menlo,Consolas,monospace}td,th{border:1px solid var(--line);padding:.1rem .35rem;text-align:center}th{background:var(--accbg);color:var(--acc)}
+summary{cursor:pointer;margin-top:.6rem;color:var(--acc)}
+footer{max-width:960px;margin:auto;padding:0 1.2rem 2rem;color:var(--mute);font-size:.85rem}
+</style>
+</head>
+<body>
+<header>
+<h1>🧬 BioInfo Toolkit</h1>
+<p>A one-page workbench for sequence retrieval, alignment, searching, phylogenetics and structure analysis.</p>
+</header>
+<nav><div>
+<a href="#db">Databases</a><a href="#pair">Pairwise</a><a href="#msa">MSA &amp; motifs</a><a href="#blast">BLAST</a><a href="#tree">Phylogeny</a><a href="#struct">Structure</a><a href="#interp">Interpretation</a>
+</div></nav>
+<main>
+
+<section id="db">
+<h2>1. Database data extraction</h2>
+<p class="sub">Sequences, features and annotations: start from the right source.</p>
+<div class="grid">
+<div class="card"><a href="https://www.ncbi.nlm.nih.gov/" target="_blank" rel="noopener">NCBI</a><small>Nucleotide/protein records, GenBank features, Gene, Taxonomy</small></div>
+<div class="card"><a href="https://www.uniprot.org/" target="_blank" rel="noopener">UniProt</a><small>Curated protein sequences, function, domains, variants</small></div>
+<div class="card"><a href="https://string-db.org/" target="_blank" rel="noopener">STRING</a><small>Protein–protein interaction networks</small></div>
+<div class="card"><a href="https://geneontology.org/" target="_blank" rel="noopener">Gene Ontology</a><small>Function, process and component terms; enrichment</small></div>
+<div class="card"><a href="https://www.rcsb.org/" target="_blank" rel="noopener">RCSB PDB</a><small>Experimental 3D structures and ligands</small></div>
+<div class="card"><a href="https://prosite.expasy.org/" target="_blank" rel="noopener">PROSITE</a><small>Patterns, profiles and functional sites</small></div>
+<div class="card"><a href="https://www.ebi.ac.uk/interpro/" target="_blank" rel="noopener">InterPro</a><small>Families, domains and signatures from member databases</small></div>
+<div class="card"><a href="https://alphafold.ebi.ac.uk/" target="_blank" rel="noopener">AlphaFold DB</a><small>Predicted structures with confidence scores</small></div>
+</div>
+</section>
+
+<section id="pair">
+<h2>2. Pairwise alignment</h2>
+<p class="sub">Runs in your browser. Global (Needleman–Wunsch) or local (Smith–Waterman), with a linear gap penalty. The scoring matrix can be downloaded as an Excel file, or you can upload your own Excel (.xlsx) or CSV matrix.</p>
+<div class="panel">
+<label>Sequence A (FASTA or plain)</label>
+<textarea id="sa">VLSPADKTNVKAAWGKVGAHAGEYGAEALERMFLSFPTTKTYFPHFDLSHGSAQVKGHGKKVADALTNAVAHV</textarea>
+<label>Sequence B</label>
+<textarea id="sb">VHLTPEEKSAVTALWGKVNVDEVGGEALGRLLVVYPWTQRFFESFGDLSTPDAVMGNPKVKAHGKKVLGAFSDGLAHL</textarea>
+<div class="row">
+<div><label>Mode</label><select id="mode"><option value="g">Global</option><option value="l">Local</option></select></div>
+<div><label>Substitution matrix</label><select id="mat"><option value="b">BLOSUM62 (protein)</option><option value="s">Match / mismatch (DNA or protein)</option><option value="x">Custom (uploaded Excel matrix)</option></select></div>
+<div><label>Gap penalty</label><input id="gap" type="number" value="8" min="0" step="1"></div>
+<div><label>Match score</label><input id="ma" type="number" value="2" step="1"></div>
+<div><label>Mismatch score</label><input id="mm" type="number" value="-1" step="1"></div>
+</div>
+<div class="row">
+<div><label>Upload matrix (.xlsx / .csv)</label><input id="mfile" type="file" accept=".xlsx,.xls,.csv"></div>
+<div><label>&nbsp;</label><button id="dlm" type="button" style="margin-top:0">Download matrix (.xlsx)</button></div>
+</div>
+<div class="stats" id="mnote"></div>
+<details><summary>View scoring matrix</summary><div class="out"><table id="mt"></table></div></details>
+<button id="run">Align</button>
+<div class="out"><div class="stats" id="st"></div><pre id="res"></pre></div>
+<button id="dpd" type="button" style="margin-top:.2rem">Download alignment score matrix (.xlsx)</button>
+<h3 style="margin:1.4rem 0 .2rem;font-size:1.05rem">Gap penalty matrix</h3>
+<p class="sub" style="margin:0 0 .4rem">Enter your penalties to get the penalty for every gap length. Affine = open + extend × (length − 1); linear = per-residue penalty × length.</p>
+<div class="row">
+<div><label>Gap type</label><select id="gt"><option value="a">Affine (open + extend)</option><option value="l">Linear</option></select></div>
+<div><label>Gap open (affine only)</label><input id="go" type="number" value="10" step="1"></div>
+<div><label>Gap extend / per residue</label><input id="ge" type="number" value="1" step="1"></div>
+<div><label>Max gap length</label><input id="gl" type="number" value="10" min="1" max="100"></div>
+</div>
+<button id="gdl" type="button">Download gap penalties (.xlsx)</button>
+<div class="stats" id="gnote" style="margin-top:.5rem"></div>
+<div class="out" style="max-height:260px;overflow-y:auto"><table id="gtab"></table></div>
+</div>
+</section>
+
+<section id="msa">
+<h2>3. Protein MSA &amp; motif extraction</h2>
+<p class="sub">Align related sequences, then mine conserved regions.</p>
+<div class="grid">
+<div class="card"><a href="https://www.ebi.ac.uk/jdispatcher/msa/clustalo" target="_blank" rel="noopener">Clustal Omega</a><small>Fast, scalable MSA</small></div>
+<div class="card"><a href="https://mafft.cbrc.jp/alignment/server/" target="_blank" rel="noopener">MAFFT</a><small>Accurate for difficult families</small></div>
+<div class="card"><a href="https://www.ebi.ac.uk/jdispatcher/msa/muscle" target="_blank" rel="noopener">MUSCLE</a><small>Alternative aligner for cross-checking</small></div>
+<div class="card"><a href="https://meme-suite.org/" target="_blank" rel="noopener">MEME Suite</a><small>De novo motif discovery and scanning</small></div>
+<div class="card"><a href="https://weblogo.threeplusone.com/" target="_blank" rel="noopener">WebLogo</a><small>Sequence logos from an alignment</small></div>
+<div class="card"><a href="https://prosite.expasy.org/scanprosite/" target="_blank" rel="noopener">ScanProsite</a><small>Scan sequences for known motifs</small></div>
+</div>
+</section>
+
+<section id="blast">
+<h2>4. Database searching</h2>
+<p class="sub">Find homologs with BLAST, then iterate with PSI-BLAST for remote relatives.</p>
+<div class="grid">
+<div class="card"><a href="https://blast.ncbi.nlm.nih.gov/Blast.cgi?PROGRAM=blastp&amp;PAGE_TYPE=BlastSearch" target="_blank" rel="noopener">BLASTP</a><small>Protein query vs protein database</small></div>
+<div class="card"><a href="https://blast.ncbi.nlm.nih.gov/Blast.cgi?PROGRAM=blastn&amp;PAGE_TYPE=BlastSearch" target="_blank" rel="noopener">BLASTN</a><small>Nucleotide query vs nucleotide database</small></div>
+<div class="card"><a href="https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE=Proteins&amp;PROGRAM=blastp&amp;RUN_PSIBLAST=on" target="_blank" rel="noopener">PSI-BLAST</a><small>Profile-based iterative search</small></div>
+<div class="card"><a href="https://blast.ncbi.nlm.nih.gov/Blast.cgi" target="_blank" rel="noopener">All BLAST programs</a><small>BLASTX, TBLASTN, DELTA-BLAST and more</small></div>
+</div>
+</section>
+
+<section id="tree">
+<h2>5. Phylogenetic tree construction</h2>
+<p class="sub">Typical pipeline: MSA → trim → pick a model → infer tree → test support → draw.</p>
+<div class="grid">
+<div class="card"><a href="http://www.iqtree.org/" target="_blank" rel="noopener">IQ-TREE</a><small>Maximum likelihood, ModelFinder, ultrafast bootstrap</small></div>
+<div class="card"><a href="https://www.megasoftware.net/" target="_blank" rel="noopener">MEGA</a><small>GUI for NJ, ML and parsimony trees</small></div>
+<div class="card"><a href="https://itol.embl.de/" target="_blank" rel="noopener">iTOL</a><small>Annotate and visualize trees online</small></div>
+<div class="card"><a href="https://www.ncbi.nlm.nih.gov/tools/treeviewer/" target="_blank" rel="noopener">NCBI Tree Viewer</a><small>Quick look at BLAST tree results</small></div>
+</div>
+</section>
+
+<section id="struct">
+<h2>6. Protein structure</h2>
+<p class="sub">Visualize, superpose and analyze 3D models.</p>
+<div class="grid">
+<div class="card"><a href="https://molstar.org/viewer/" target="_blank" rel="noopener">Mol* Viewer</a><small>Browser-based 3D viewer</small></div>
+<div class="card"><a href="https://www.cgl.ucsf.edu/chimerax/" target="_blank" rel="noopener">UCSF ChimeraX</a><small>Visualization, analysis, matchmaker alignment</small></div>
+<div class="card"><a href="https://pymol.org/" target="_blank" rel="noopener">PyMOL</a><small>Publication-quality figures</small></div>
+<div class="card"><a href="https://www.rcsb.org/alignment" target="_blank" rel="noopener">RCSB Pairwise Alignment</a><small>CE, FATCAT, TM-align, jCE</small></div>
+<div class="card"><a href="https://zhanggroup.org/TM-align/" target="_blank" rel="noopener">TM-align</a><small>Fold similarity via TM-score</small></div>
+<div class="card"><a href="https://alphafold.ebi.ac.uk/" target="_blank" rel="noopener">AlphaFold DB</a><small>Predicted models plus pLDDT and PAE</small></div>
+</div>
+</section>
+
+<section id="interp">
+<h2>7. Interpreting your results</h2>
+<div class="grid">
+<div class="card"><b>BLAST hits</b><ul class="tips"><li>Low E-value and high bit score</li><li>Check query coverage, not only % identity</li><li>Below ~25–30% identity, confirm homology with domains or structure</li></ul></div>
+<div class="card"><b>Alignments</b><ul class="tips"><li>Look for conserved blocks and catalytic residues</li><li>Gap-heavy columns often mean unreliable regions</li><li>Test matrix and gap sensitivity</li></ul></div>
+<div class="card"><b>Trees</b><ul class="tips"><li>Bootstrap ≥ 70–95 suggests solid support</li><li>Root with an outgroup</li><li>Distinguish orthologs from paralogs</li></ul></div>
+<div class="card"><b>Structures</b><ul class="tips"><li>RMSD is low for similar folds; TM-score &gt; 0.5 suggests the same fold</li><li>pLDDT &gt; 90 is high confidence; &lt; 50 is likely disordered</li><li>Check resolution of experimental models</li></ul></div>
+<div class="card"><b>GO / networks</b><ul class="tips"><li>Use FDR-corrected enrichment values</li><li>Use a sensible background gene set</li><li>Raise the STRING confidence threshold to cut noise</li></ul></div>
+</div>
+</section>
+</main>
+<footer>Alignment runs locally and no sequences leave your browser. Database and BLAST links open the official external services.</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const AA="ARNDCQEGHILKMFPSTWYV";
+const ROWS=[
+"4 -1 -2 -2 0 -1 -1 0 -2 -1 -1 -1 -1 -2 -1 1 0 -3 -2 0",
+"-1 5 0 -2 -3 1 0 -2 0 -3 -2 2 -1 -3 -2 -1 -1 -3 -2 -3",
+"-2 0 6 1 -3 0 0 0 1 -3 -3 0 -2 -3 -2 1 0 -4 -2 -3",
+"-2 -2 1 6 -3 0 2 -1 -1 -3 -4 -1 -3 -3 -1 0 -1 -4 -3 -3",
+"0 -3 -3 -3 9 -3 -4 -3 -3 -1 -1 -3 -1 -2 -3 -1 -1 -2 -2 -1",
+"-1 1 0 0 -3 5 2 -2 0 -3 -2 1 0 -3 -1 0 -1 -2 -1 -2",
+"-1 0 0 2 -4 2 5 -2 0 -3 -3 1 -2 -3 -1 0 -1 -3 -2 -2",
+"0 -2 0 -1 -3 -2 -2 6 -2 -4 -4 -2 -3 -3 -2 0 -2 -2 -3 -3",
+"-2 0 1 -1 -3 0 0 -2 8 -3 -3 -1 -2 -1 -2 -1 -2 -2 2 -3",
+"-1 -3 -3 -3 -1 -3 -3 -4 -3 4 2 -3 1 0 -3 -2 -1 -3 -1 3",
+"-1 -2 -3 -4 -1 -2 -3 -4 -3 2 4 -2 2 0 -3 -2 -1 -2 -1 1",
+"-1 2 0 -1 -3 1 1 -2 -1 -3 -2 5 -1 -3 -1 0 -1 -3 -2 -2",
+"-1 -1 -2 -3 -1 0 -2 -3 -2 1 2 -1 5 0 -2 -1 -1 -1 -1 1",
+"-2 -3 -3 -3 -2 -3 -3 -3 -1 0 0 -3 0 6 -4 -2 -2 1 3 -1",
+"-1 -2 -2 -1 -3 -1 -1 -2 -2 -3 -3 -1 -2 -4 7 -1 -1 -4 -3 -2",
+"1 -1 1 0 -1 0 0 0 -1 -2 -2 0 -1 -2 -1 4 1 -3 -2 -2",
+"0 -1 0 -1 -1 -1 -1 -2 -2 -1 -1 -1 -1 -2 -1 1 5 -2 -2 0",
+"-3 -3 -4 -4 -2 -2 -3 -2 -2 -3 -2 -3 -1 1 -4 -3 -2 11 2 -3",
+"-2 -2 -2 -3 -2 -1 -2 -3 2 -1 -1 -2 -1 3 -3 -2 -2 2 7 -1",
+"0 -3 -3 -3 -1 -2 -2 -3 -3 3 1 -2 1 -1 -2 -2 0 -3 -1 4"];
+const B62={};
+ROWS.forEach((r,i)=>{B62[AA[i]]={};r.split(" ").forEach((v,j)=>B62[AA[i]][AA[j]]=+v)});
+
+const $=id=>document.getElementById(id);
+const clean=s=>s.split("\n").filter(l=>!l.startsWith(">")).join("").replace(/[^A-Za-z]/g,"").toUpperCase();
+
+function align(a,b,local,sc,gap){
+  const n=a.length,m=b.length,W=m+1;
+  const H=new Int32Array((n+1)*W),T=new Uint8Array((n+1)*W);
+  if(!local){for(let i=1;i<=n;i++){H[i*W]=-gap*i;T[i*W]=2}for(let j=1;j<=m;j++){H[j]=-gap*j;T[j]=3}}
+  let best=0,bi=0,bj=0;
+  for(let i=1;i<=n;i++)for(let j=1;j<=m;j++){
+    const d=H[(i-1)*W+j-1]+sc(a[i-1],b[j-1]),u=H[(i-1)*W+j]-gap,l=H[i*W+j-1]-gap;
+    let v=d,t=1;
+    if(u>v){v=u;t=2}
+    if(l>v){v=l;t=3}
+    if(local&&v<=0){v=0;t=0}
+    H[i*W+j]=v;T[i*W+j]=t;
+    if(local&&v>best){best=v;bi=i;bj=j}
+  }
+  let i=n,j=m;
+  if(local){i=bi;j=bj}
+  const score=local?best:H[n*W+m];
+  let x="",y="",mid="",id=0,gaps=0;
+  while(i>0||j>0){
+    const t=T[i*W+j];
+    if(local&&t===0)break;
+    if(t===1){const p=a[i-1],q=b[j-1];x=p+x;y=q+y;
+      if(p===q){mid="|"+mid;id++}else mid=(sc(p,q)>0?":":" ")+mid;i--;j--}
+    else if(t===2){x=a[i-1]+x;y="-"+y;mid=" "+mid;gaps++;i--}
+    else{x="-"+x;y=b[j-1]+y;mid=" "+mid;gaps++;j--}
+  }
+  return{score,x,y,mid,id,gaps,start:[i+1,j+1],H,W};
+}
+
+let CUST=null,CUSTM=null,CMIN=-4;
+function getMatrix(){
+  const mv=$("mat").value;
+  if(mv==="b")return{name:"BLOSUM62",cl:[...AA],rl:[...AA],v:[...AA].map(a=>[...AA].map(b=>B62[a][b]))};
+  if(mv==="x")return CUSTM;
+  const L=[...new Set((clean($("sa").value)+clean($("sb").value)).split(""))].sort();
+  const ma=+$("ma").value,mm=+$("mm").value;
+  return{name:"match_"+ma+"_mismatch_"+mm,cl:L,rl:L,v:L.map(a=>L.map(b=>a===b?ma:mm))};
+}
+function renderM(){
+  const m=getMatrix(),t=$("mt");
+  if(!m){t.innerHTML="";return}
+  t.innerHTML="<tr><th></th>"+m.cl.map(c=>"<th>"+c+"</th>").join("")+"</tr>"+
+    m.rl.map((r,i)=>"<tr><th>"+r+"</th>"+m.v[i].map(x=>"<td>"+x+"</td>").join("")+"</tr>").join("");
+}
+["mat","ma","mm","sa","sb"].forEach(id=>{$(id).addEventListener("input",renderM);$(id).addEventListener("change",renderM)});
+$("mfile").onchange=async e=>{
+  const f=e.target.files[0];if(!f)return;
+  try{
+    const wb=XLSX.read(await f.arrayBuffer(),{type:"array"});
+    const r=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:""});
+    const cl=r[0].slice(1).map(v=>String(v).trim().toUpperCase()).filter(Boolean);
+    const rl=[],v=[];
+    for(let i=1;i<r.length;i++){
+      const lab=String(r[i][0]).trim().toUpperCase();if(!lab)continue;
+      rl.push(lab);v.push(cl.map((_,j)=>Number(r[i][j+1])));
+    }
+    if(!cl.length||!rl.length||v.some(x=>x.some(n=>isNaN(n))))throw new Error("bad");
+    CUST={};rl.forEach((a,i)=>{CUST[a]={};cl.forEach((b,j)=>CUST[a][b]=v[i][j])});
+    CMIN=Math.min(...v.flat());
+    CUSTM={name:f.name.replace(/\.\w+$/,""),cl,rl,v};
+    $("mat").value="x";renderM();
+    $("mnote").textContent="Loaded "+rl.length+"×"+cl.length+" matrix from "+f.name+". Residue pairs missing from it score "+CMIN+".";
+  }catch(err){
+    $("mnote").textContent="Couldn’t read that file. Use a sheet with column labels in row 1, row labels in column A and numeric scores inside.";
+  }
+};
+$("dlm").onclick=async()=>{
+  const m=getMatrix();
+  if(!m){$("mnote").textContent="Upload a matrix first, or choose another one.";return}
+  try{
+    const d=window.claude&&await claude.use("downloads");
+    if(!d){$("mnote").textContent="Saving files isn’t available in this view.";return}
+    const aoa=[[""].concat(m.cl)].concat(m.rl.map((r,i)=>[r].concat(m.v[i])));
+    const wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(aoa),"Matrix");
+    const buf=XLSX.write(wb,{bookType:"xlsx",type:"array"});
+    await d.save({filename:m.name+"_matrix.xlsx",data:buf});
+    $("mnote").textContent="Matrix saved as "+m.name+"_matrix.xlsx.";
+  }catch(err){
+    if(!err||err.code!=="declined")$("mnote").textContent="Couldn’t save the file here.";
+  }
+};
+let LAST=null;
+async function saveX(aoa,sheet,fname,el){
+  try{
+    const d=window.claude&&await claude.use("downloads");
+    if(!d){el.textContent="Saving files isn’t available in this view.";return}
+    const wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(aoa),sheet);
+    await d.save({filename:fname,data:XLSX.write(wb,{bookType:"xlsx",type:"array"})});
+    el.textContent="Saved "+fname+".";
+  }catch(e){if(!e||e.code!=="declined")el.textContent="Couldn’t save the file here."}
+}
+function gapRows(){
+  const t=$("gt").value,o=+$("go").value||0,e=+$("ge").value||0;
+  const n=Math.min(100,Math.max(1,Math.floor(+$("gl").value)||10));
+  const rows=[];
+  for(let L=1;L<=n;L++)rows.push([L,t==="a"?o+e*(L-1):e*L]);
+  return rows;
+}
+function gapAoa(){
+  return [["Gap length","Penalty","Score added","Avg per residue"]].concat(gapRows().map(x=>[x[0],x[1],-x[1],+(x[1]/x[0]).toFixed(2)]));
+}
+function renderG(){
+  const a=gapAoa();
+  $("gtab").innerHTML="<tr>"+a[0].map(h=>"<th>"+h+"</th>").join("")+"</tr>"+a.slice(1).map(r=>"<tr>"+r.map(c=>"<td>"+c+"</td>").join("")+"</tr>").join("");
+}
+["gt","go","ge","gl"].forEach(id=>{$(id).addEventListener("input",renderG);$(id).addEventListener("change",renderG)});
+$("gdl").onclick=()=>saveX(gapAoa(),"Gap penalties","gap_penalty_"+($("gt").value==="a"?"affine":"linear")+".xlsx",$("gnote"));
+$("dpd").onclick=()=>{
+  if(!LAST){$("gnote").textContent="Run an alignment first.";return}
+  const{r,a,b}=LAST,W=r.W,H=r.H;
+  if((a.length+1)*(b.length+1)>1000000){$("gnote").textContent="Matrix too large for Excel export here; use sequences under about 1,000 residues each.";return}
+  const aoa=[["","gap"].concat([...b])];
+  for(let i=0;i<=a.length;i++){const row=[i?a[i-1]:"gap"];for(let j=0;j<=b.length;j++)row.push(H[i*W+j]);aoa.push(row)}
+  saveX(aoa,"Score matrix","alignment_score_matrix.xlsx",$("gnote"));
+};
+renderM();renderG();
+$("run").onclick=()=>{
+  const a=clean($("sa").value),b=clean($("sb").value);
+  if(!a||!b){$("st").textContent="Please enter both sequences.";$("res").textContent="";return}
+  if(a.length>2000||b.length>2000){$("st").textContent="Sequences are limited to 2,000 residues each.";$("res").textContent="";return}
+  const gap=Math.abs(+$("gap").value||0),ma=+$("ma").value,mm=+$("mm").value;
+  const mv=$("mat").value;
+  if(mv==="x"&&!CUST){$("st").textContent="Upload an Excel/CSV matrix first, or choose another matrix.";$("res").textContent="";return}
+  const sc=mv==="b"?(p,q)=>(B62[p]&&B62[p][q]!==undefined)?B62[p][q]:-1
+    :mv==="x"?(p,q)=>(CUST[p]&&CUST[p][q]!==undefined)?CUST[p][q]:CMIN
+    :(p,q)=>p===q?ma:mm;
+  const local=$("mode").value==="l";
+  const r=align(a,b,local,sc,gap);LAST={r,a,b};
+  const L=r.x.length;
+  $("st").textContent="Score "+r.score+" · length "+L+" · identity "+r.id+"/"+L+" ("+(L?(100*r.id/L).toFixed(1):0)+"%) · gaps "+r.gaps;
+  let out="",pa=r.start[0],pb=r.start[1];
+  for(let k=0;k<L;k+=60){
+    const x=r.x.slice(k,k+60),y=r.y.slice(k,k+60),mi=r.mid.slice(k,k+60);
+    const ca=x.replace(/-/g,"").length,cb=y.replace(/-/g,"").length;
+    out+="A "+String(pa).padStart(5)+" "+x+"\n        "+" "+mi+"\nB "+String(pb).padStart(5)+" "+y+"\n\n";
+    pa+=ca;pb+=cb;
+  }
+  $("res").textContent=out;
+};
+$("run").click();
+</script>
+</body>
+</html>
